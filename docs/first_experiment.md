@@ -1,6 +1,6 @@
 # 单动作训练：版本基线
 
-记录日期：2026-11-14。
+更新日期：2026-11-15。详细操作见仓库根目录 [复刻指南.md](../复刻指南.md)。
 
 ## 仓库与版本
 
@@ -33,7 +33,7 @@ git remote add upstream https://github.com/HybridRobotics/supermimic.git
 uv sync --locked
 ```
 
-保留仓库内的 `uv.lock`，首次实验不主动升级依赖。锁文件中的 mjlab 是本地 editable 路径，不会自动固定其 Git 提交，因此上面的依赖检出步骤不可省略。
+使用本实验分支更新后的 `uv.lock`，首次实验不主动升级依赖。官方基线中的旧锁文件对应 mjlab 1.5.0，与上述依赖提交不匹配；本机已执行 `uv lock`，解析到 mjlab 1.6.0、PyTorch 2.15.0、MuJoCo / MuJoCo Warp 3.16.0、Warp 1.19.0、RSL-RL 5.5.2。锁文件中的 mjlab 是本地 editable 路径，不会自动固定其 Git 提交，因此上面的依赖检出步骤不可省略。
 
 训练前记录实际代码版本及工作区状态：
 
@@ -44,4 +44,4 @@ git -C ../mjlab_research rev-parse HEAD
 git -C ../mjlab_research status --short
 ```
 
-上述配置仅固定代码与依赖基线，尚未验证安装或 GPU 训练。
+本机已完成依赖安装、基础模块与动作转换模块导入、训练入口 `--help` 检查，以及 run1_subject2.csv 的 CPU 转换与输出结构检查。尚未验证 GPU 仿真、训练、模型 artifact 上传及回放，不应将此环境标为完整训练验证通过。
