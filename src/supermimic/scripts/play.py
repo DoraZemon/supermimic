@@ -35,6 +35,8 @@ from supermimic.utils.wandb_artifacts import (
 class PlayConfig:
   wandb_path: str
   motion_file: str | None = None
+  nconmax: int | None = None
+  """Override contact capacity per environment for playback."""
   initial_task: Literal["motion", "velocity"] = "motion"
   """Task selected when the viewer opens. Switch live via the GUI dropdown."""
   device: str | None = None
@@ -49,6 +51,10 @@ def play(task_id: str, cfg: PlayConfig) -> None:
   print(f"[INFO] Loading environment: {task_id}")
   env_cfg = load_env_cfg(task_id, play=True)
   env_cfg.scene.num_envs = 1
+  if cfg.nconmax is not None:
+    if cfg.nconmax <= 0:
+      raise ValueError("nconmax must be positive")
+    env_cfg.sim.nconmax = cfg.nconmax
   env_cfg.observations["actor"].enable_corruption = True
 
   import wandb
