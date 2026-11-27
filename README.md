@@ -49,14 +49,29 @@ uv run src/supermimic/scripts/play.py \
 
 ### Fruit Basket V1 (`SuperMimic-Basket-V1`)
 
-Single-GPU smoke test:
+Lab single-GPU RTX 5080 host (recommended first, reuses existing `.venv` with `--locked --no-sync`):
 
 ```bash
-uv run python -m supermimic.scripts.train_basket \
+cd /home/user/zhengshaozheng/supermimic_ws/supermimic
+git fetch origin && git checkout -b experiment/basket-v1 origin/experiment/basket-v1
+
+# 1-minute smoke test
+CUDA_VISIBLE_DEVICES=0 bash ../lab-run.sh /home/user/.local/bin/uv run --locked --no-sync \
+  python -m supermimic.scripts.train_basket \
   --gpu-ids 0 --env.scene.num-envs 256 --agent.max-iterations 20 --agent.logger tensorboard
+
+# Full V1 training (drop to 1024 envs if 16 GB VRAM is tight)
+CUDA_VISIBLE_DEVICES=0 bash ../lab-run.sh /home/user/.local/bin/uv run --locked --no-sync \
+  python -m supermimic.scripts.train_basket \
+  --gpu-ids 0 --env.scene.num-envs 2048 --agent.max-iterations 10000 --agent.run-name v1_5080 --agent.logger wandb
+
+# Interactive playback in Viser browser
+CUDA_VISIBLE_DEVICES=0 bash ../lab-run.sh /home/user/.local/bin/uv run --locked --no-sync \
+  python -m supermimic.scripts.play_basket \
+  --checkpoint-file logs/rsl_rl/g1_basket_v1/<timestamp>_v1_5080/model_2000.pt --viewer viser
 ```
 
-Multi-GPU DDP training (e.g., 4 or 8× RTX 3090):
+Generic / Multi-GPU DDP training (e.g., 4 or 8× RTX 3090):
 
 ```bash
 uv run python -m supermimic.scripts.train_basket \
@@ -69,6 +84,8 @@ Play back a local checkpoint:
 uv run python -m supermimic.scripts.play_basket \
   --checkpoint-file logs/rsl_rl/g1_basket_v1/<timestamp>/model_xxxx.pt
 ```
+
+> 实验室主机 AI 接续工作请先阅读 [对话上下文.md](对话上下文.md)；详细 5080 训练步骤与理想效果验收见 [使用指南.md — 9.2 节](使用指南.md#92-实验室单卡-rtx-5080-主机训练步骤推荐首选)。
 
 ### Remote GPU Server Deployment (Quick Checklist)
 
