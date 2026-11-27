@@ -2,6 +2,7 @@
 
 from mjlab.tasks.registry import load_rl_cfg, register_mjlab_task
 
+from .basket import g1_basket_v1_env_cfg, g1_basket_v1_rl_cfg
 from .env_cfgs import gencoord_env_cfg, maxcoord_env_cfg
 
 # We reuse the RL config from the base tracking task
@@ -24,6 +25,17 @@ try:
     env_cfg=maxcoord_env_cfg(),
     play_env_cfg=maxcoord_env_cfg(play=True),
     rl_cfg=load_rl_cfg(BASE_TASK_ID),
+  )
+except ValueError:
+  # Already registered
+  pass
+
+try:
+  register_mjlab_task(
+    task_id="SuperMimic-Basket-V1",
+    env_cfg=g1_basket_v1_env_cfg(play=False),
+    play_env_cfg=g1_basket_v1_env_cfg(play=True),
+    rl_cfg=g1_basket_v1_rl_cfg(),
   )
 except ValueError:
   # Already registered
